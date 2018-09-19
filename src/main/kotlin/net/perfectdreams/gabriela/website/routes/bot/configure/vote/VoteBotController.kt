@@ -17,9 +17,9 @@ import net.perfectdreams.gabriela.utils.Constants.jsonParser
 import net.perfectdreams.gabriela.utils.DiscordUtils
 import net.perfectdreams.gabriela.utils.trueIp
 import net.perfectdreams.gabriela.utils.urlQueryString
-import net.perfectdreams.gabriela.views.GenericError
-import net.perfectdreams.gabriela.views.VoteBot
-import net.perfectdreams.gabriela.views.VoteBotSuccess
+import net.perfectdreams.gabriela.views.GenericErrorView
+import net.perfectdreams.gabriela.views.VoteBotSuccessView
+import net.perfectdreams.gabriela.views.VoteBotView
 import org.jooby.Request
 import org.jooby.Response
 import org.jooby.Status
@@ -38,12 +38,12 @@ class VoteBotController {
 		val userIdentification = if (optional.isPresent) optional.get() else null
 
 		if (botInfo != null && bot != null) {
-			res.send(VoteBot.build(req, botInfo, bot, userIdentification))
+			res.send(VoteBotView(userIdentification, bot, botInfo).generate(req, res))
 			return
 		}
 
 		res.status(Status.FORBIDDEN)
-		res.send(GenericError.build(req, "whoops"))
+		res.send(GenericErrorView("whoops").generate(req, res))
 	}
 
 	@POST
@@ -68,14 +68,14 @@ class VoteBotController {
 
 			if (!success) {
 				res.status(Status.FORBIDDEN)
-				res.send(GenericError.build(req, "reCAPTCHA inválido!"))
+				res.send(GenericErrorView("reCAPTCHA inválido!").generate(req, res))
 				return
 			}
 
 			val canVote = botInfo.canUpvote(userIdentification.id, req.trueIp)
 			if (!canVote) {
 				res.status(Status.FORBIDDEN)
-				res.send(GenericError.build(req, "Você já votou hoje!"))
+				res.send(GenericErrorView("Você já votou hoje!").generate(req, res))
 				return
 			}
 
@@ -83,7 +83,7 @@ class VoteBotController {
 
 			if (!result.canAccess) {
 				res.status(Status.FORBIDDEN)
-				res.send(GenericError.build(req, "Sua conta parece ser maliciosa... você está usando proxies?"))
+				res.send(GenericErrorView("Sua conta parece ser maliciosa... você está usando proxies?").generate(req, res))
 				return
 			}
 
@@ -119,7 +119,7 @@ class VoteBotController {
 					Updates.push("votes", vote)
 			)
 
-			res.send(VoteBotSuccess.build(req))
+			res.send(VoteBotSuccessView().generate(req, res))
 		}
 	}
 }

@@ -5,9 +5,9 @@ import com.mongodb.client.model.Updates
 import net.perfectdreams.gabriela.GabrielaLauncher
 import net.perfectdreams.gabriela.oauth2.TemmieDiscordAuth
 import net.perfectdreams.gabriela.utils.*
-import net.perfectdreams.gabriela.views.ConfigureBot
-import net.perfectdreams.gabriela.views.GenericError
-import net.perfectdreams.gabriela.views.GenericInfo
+import net.perfectdreams.gabriela.views.ConfigureBotView
+import net.perfectdreams.gabriela.views.GenericErrorView
+import net.perfectdreams.gabriela.views.GenericInfoView
 import org.jooby.Request
 import org.jooby.Response
 import org.jooby.Status
@@ -26,12 +26,12 @@ class ConfigureBotController {
 		val userIdentification = if (optional.isPresent) optional.get() else return
 
 		if (botInfo != null && bot != null && (botInfo.ownerId == userIdentification.id || botInfo.ownerIds.contains(userIdentification.id))) {
-			res.send(ConfigureBot.build(req, botInfo, bot))
+			res.send(ConfigureBotView(bot, botInfo).generate(req, res))
 			return
 		}
 
 		res.status(Status.FORBIDDEN)
-		res.send(GenericError.build(req, "whoops"))
+		res.send(GenericErrorView("whoops").generate(req, res))
 	}
 
 	@POST
@@ -90,10 +90,11 @@ class ConfigureBotController {
 					)
 				} catch (e: Exception) {
 					res.status(Status.SERVER_ERROR)
-					res.send(GenericError.build(req, "Erro ao salvar a configuração do seu bot!"))
+					res.send(GenericErrorView( "Erro ao salvar a configuração do seu bot!").generate(req, res))
+					return
 				}
 
-				res.send(GenericInfo.build(req, "Sucesso!"))
+				res.send(GenericInfoView( "Sucesso!").generate(req, res))
 				return
 			}
 			if (type == "reset") {
@@ -102,22 +103,22 @@ class ConfigureBotController {
 						Filters.eq("_id", botInfo.botId),
 						Updates.set("token", botInfo.token)
 				)
-				res.send(GenericInfo.build(req, "Token alterado com sucesso!"))
+				res.send(GenericInfoView("Token alterado com sucesso!").generate(req, res))
 				return
 			}
 			if (type == "promote") {
 				if (botInfo.lastBump + 14_400_000 > System.currentTimeMillis()) {
-					res.send(GenericInfo.build(req, "Ainda não se passaram quatro horas desde a última promoção!"))
+					res.send(GenericInfoView("Ainda não se passaram quatro horas desde a última promoção!").generate(req, res))
 				} else {
 					GabrielaLauncher.gabriela.collection.updateOne(
 							Filters.eq("_id", botInfo.botId),
 							Updates.set("lastBump", System.currentTimeMillis())
 					)
-					res.send(GenericInfo.build(req, "Seu bot foi promovido com sucesso!"))
+					res.send(GenericInfoView("Seu bot foi promovido com sucesso!").generate(req, res))
 				}
 			}
 			res.status(Status.FORBIDDEN)
-			res.send(GenericError.build(req, "whoops"))
+			res.send(GenericErrorView("whoops").generate(req, res))
 		}
 	}
 

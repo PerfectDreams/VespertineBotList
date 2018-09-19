@@ -3,7 +3,7 @@ package net.perfectdreams.gabriela.website.routes.bot.configure
 import com.mongodb.client.model.Filters
 import net.perfectdreams.gabriela.GabrielaLauncher
 import net.perfectdreams.gabriela.utils.Constants
-import net.perfectdreams.gabriela.views.GenericError
+import net.perfectdreams.gabriela.views.GenericErrorView
 import org.jooby.Request
 import org.jooby.Response
 import org.jooby.Status
@@ -26,6 +26,6 @@ class InviteBotController {
 		}
 
 		res.status(Status.FORBIDDEN)
-		res.send(GenericError.build(req, "whoops"))
+		res.send(GenericErrorView("whoops").generate(req, res))
 	}
 }

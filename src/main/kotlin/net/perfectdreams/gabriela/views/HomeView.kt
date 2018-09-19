@@ -15,13 +15,13 @@ import net.perfectdreams.gabriela.utils.Constants.gson
 import org.jooby.Request
 import org.jooby.Response
 
-object Home {
-	fun build(req: Request, res: Response) = Base.build(req, "Bots, bots, bots!", null) {
+class HomeView : BaseView() {
+	override fun getContent(req: Request, res: Response): DIV.() -> Unit = {
 		div {
 			id = "page-header"
 			div("wrapper") {
 				h1 {
-					+"Vespertine's Bot List"
+					+"Discord Bots"
 				}
 				h2 {
 					+"Te ajudando a transformar o seu servidor em algo incrível!"
@@ -49,6 +49,15 @@ object Home {
 								div {
 									style = "margin-top: 16px;"
 									+"Com mais de ${gabriela.collection.find().count()} bots diferentes para você escolher, eu tenho certeza que você irá encontrar um que você irá amar!"
+									/* button {
+										+ "Explorar Tags"
+									} */
+									a(href = "https://discord.gg/PBAFd3V") {
+										button(classes = "color-blurple button") {
+											i("fab fa-discord")
+											+" Nosso Servidor"
+										}
+									}
 								}
 							}
 						}
@@ -110,10 +119,10 @@ object Home {
 									Aggregates.limit(12)
 							)
 					)
+					.toMutableList()
+
 			div("pure-g") {
-				for (bot in bestBots) {
-					generateBotInfo(bot)
-				}
+				generateBotsInfo(bestBots)
 			}
 			div(classes = "view-more-button-wrapper") {
 				div(classes = "button view-more-button") {
@@ -136,9 +145,7 @@ object Home {
 						.sort(Sorts.descending("lastBump"))
 						.limit(12)
 						.toMutableList()
-				for (bot in recentlyAddedBots) {
-					generateBotInfo(bot)
-				}
+				generateBotsInfo(recentlyAddedBots)
 			}
 			div(classes = "view-more-button-wrapper") {
 				div(classes = "button view-more-button") {
@@ -162,17 +169,21 @@ object Home {
 								Aggregates.sample(12)
 						)
 				).toMutableList()
-				for (bot in randomBots) {
-					generateBotInfo(bot)
-				}
+				generateBotsInfo(randomBots)
 			}
 
 			val categoryArray = JsonArray()
 			for (category in BotCategory.values()) {
-				val randomBotInfo = gabriela.collection.find(
-						Filters.and(
-								Filters.eq("approved", true),
-								Filters.`in`("categories", listOf(category.name))
+				val randomBotInfo = gabriela.collection.aggregate(
+						listOf(
+								Aggregates.match(
+										Filters.and(
+												Filters.eq("approved", true),
+												Filters.`in`("categories", listOf(category.name))
+										)
+								),
+								Aggregates.sample(1),
+								Aggregates.limit(1)
 						)
 				).firstOrNull() ?: continue
 				val randomBot = botListGuild.getMemberById(randomBotInfo.botId) ?: continue
@@ -188,10 +199,16 @@ object Home {
 
 			val subCategoryArray = JsonArray()
 			for (category in BotSubcategory.values()) {
-				val randomBotInfo = gabriela.collection.find(
-						Filters.and(
-								Filters.eq("approved", true),
-								Filters.`in`("subCategories", listOf(category.name))
+				val randomBotInfo = gabriela.collection.aggregate(
+						listOf(
+								Aggregates.match(
+										Filters.and(
+												Filters.eq("approved", true),
+												Filters.`in`("categories", listOf(category.name))
+										)
+								),
+								Aggregates.sample(1),
+								Aggregates.limit(1)
 						)
 				).firstOrNull() ?: continue
 				val randomBot = botListGuild.getMemberById(randomBotInfo.botId) ?: continue

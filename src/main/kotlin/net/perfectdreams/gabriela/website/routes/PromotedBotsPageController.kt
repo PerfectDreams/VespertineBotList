@@ -3,7 +3,7 @@ package net.perfectdreams.gabriela.website.routes
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Sorts
 import net.perfectdreams.gabriela.GabrielaLauncher.gabriela
-import net.perfectdreams.gabriela.views.TopBots
+import net.perfectdreams.gabriela.views.TopBotsView
 import org.jooby.Request
 import org.jooby.Response
 import org.jooby.mvc.GET
@@ -25,6 +25,6 @@ class PromotedBotsPageController {
 				.limit(48)
 				.toMutableList()
 
-		res.send(TopBots.build(req, res, "Bots recentemente promovidos", bestBots))
+		res.send(TopBotsView("Bots recentemente promovidos", bestBots))
 	}
 }

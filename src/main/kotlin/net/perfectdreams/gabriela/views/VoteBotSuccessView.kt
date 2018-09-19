@@ -1,11 +1,14 @@
 package net.perfectdreams.gabriela.views
 
+import kotlinx.css.h1
+import kotlinx.css.img
 import kotlinx.html.*
 import net.perfectdreams.gabriela.utils.Constants
 import org.jooby.Request
+import org.jooby.Response
 
-object GenericError {
-	fun build(req: Request, error: String) = Base.build(req, "Oopsie Woopsie!", null) {
+class VoteBotSuccessView : BaseView() {
+	override fun getContent(req: Request, res: Response): DIV.() -> Unit = {
 		div {
 			id = "content"
 			div {
@@ -15,10 +18,7 @@ object GenericError {
 					classes += "center-text"
 					img(src = "${Constants.WEBSITE_URL}/assets/img/lori_hm.png")
 					h1 {
-						+ error
-					}
-					p {
-						+ "Tente novamente!"
+						+"Você votou com sucesso! Yay!"
 					}
 				}
 			}

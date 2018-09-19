@@ -1,7 +1,7 @@
 package net.perfectdreams.gabriela.website.routes
 
-import net.perfectdreams.gabriela.views.Search
-import net.perfectdreams.gabriela.views.SearchResult
+import net.perfectdreams.gabriela.views.SearchResultView
+import net.perfectdreams.gabriela.views.SearchView
 import org.jooby.Request
 import org.jooby.Response
 import org.jooby.mvc.GET
@@ -14,9 +14,9 @@ class SearchController {
 		val query = req.param("q")
 
 		if (query.isSet) {
-			res.send(SearchResult.build(req, res))
+			res.send(SearchResultView().generate(req, res))
 		} else {
-			res.send(Search.build(req, res))
+			res.send(SearchView().generate(req, res))
 		}
 	}
 }

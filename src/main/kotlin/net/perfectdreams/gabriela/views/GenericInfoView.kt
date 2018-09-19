@@ -3,9 +3,14 @@ package net.perfectdreams.gabriela.views
 import kotlinx.html.*
 import net.perfectdreams.gabriela.utils.Constants
 import org.jooby.Request
+import org.jooby.Response
 
-object GenericInfo {
-	fun build(req: Request, error: String) = Base.build(req, "Sucesso!", null) {
+class GenericInfoView(val info: String) : BaseView() {
+	override fun getPageTitle(): String {
+		return "Sucesso!"
+	}
+
+	override fun getContent(req: Request, res: Response): DIV.() -> Unit = {
 		div {
 			id = "content"
 			div {
@@ -15,7 +20,7 @@ object GenericInfo {
 					classes += "center-text"
 					img(src = "${Constants.WEBSITE_URL}/assets/img/lori_hm.png")
 					h1 {
-						+ error
+						+ info
 					}
 				}
 			}

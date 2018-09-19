@@ -3,9 +3,14 @@ package net.perfectdreams.gabriela.views
 import kotlinx.html.*
 import net.perfectdreams.gabriela.utils.Constants
 import org.jooby.Request
+import org.jooby.Response
 
-object NotFoundError {
-	fun build(req: Request) = Base.build(req, "Oopsie Woopsie!", null) {
+class GenericErrorView(val error: String) : BaseView() {
+	override fun getPageTitle(): String {
+		return "Oopsie Woopsie!"
+	}
+
+	override fun getContent(req: Request, res: Response): DIV.() -> Unit = {
 		div {
 			id = "content"
 			div {
@@ -15,10 +20,10 @@ object NotFoundError {
 					classes += "center-text"
 					img(src = "${Constants.WEBSITE_URL}/assets/img/lori_hm.png")
 					h1 {
-						+"Acho que não é isto que você queria encontrar."
+						+ error
 					}
 					p {
-						+"A página que você deseja não foi encontrada!"
+						+ "Tente novamente!"
 					}
 				}
 			}

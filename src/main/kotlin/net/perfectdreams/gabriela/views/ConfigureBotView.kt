@@ -7,11 +7,16 @@ import net.dv8tion.jda.core.entities.Member
 import net.perfectdreams.gabriela.models.DiscordBot
 import net.perfectdreams.gabriela.utils.*
 import org.jooby.Request
+import org.jooby.Response
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
 
-object ConfigureBot {
-	fun build(req: Request, botInfo: DiscordBot, bot: Member) = Base.build(req, "Configurar Bot", null) {
+class ConfigureBotView(val bot: Member, val botInfo: DiscordBot) : BaseView() {
+	override fun getPageTitle(): String {
+		return "Configurar Bot"
+	}
+
+	override fun getContent(req: Request, res: Response): DIV.() -> Unit = {
 		div {
 			id = "content"
 			div {
@@ -159,7 +164,7 @@ object ConfigureBot {
 						generateHeader(
 								"fas fa-terminal",
 								"Token",
-								"Integre o seu bot com a Vespertine's Bot List!"
+								"Integre o seu bot com o Discord Bots!"
 						)
 
 						if (botInfo.token != null) {

@@ -13,10 +13,10 @@ import net.perfectdreams.gabriela.utils.Constants.WEBSITE_URL
 import net.perfectdreams.gabriela.utils.Constants.gson
 import net.perfectdreams.gabriela.utils.encodeToUrl
 import net.perfectdreams.gabriela.utils.urlQueryString
-import net.perfectdreams.gabriela.views.Dashboard
-import net.perfectdreams.gabriela.views.Home
-import net.perfectdreams.gabriela.views.NotFoundError
-import net.perfectdreams.gabriela.views.ViewBot
+import net.perfectdreams.gabriela.views.DashboardView
+import net.perfectdreams.gabriela.views.HomeView
+import net.perfectdreams.gabriela.views.NotFoundErrorView
+import net.perfectdreams.gabriela.views.ViewBotView
 import net.perfectdreams.gabriela.website.routes.PromotedBotsPageController
 import net.perfectdreams.gabriela.website.routes.SearchController
 import net.perfectdreams.gabriela.website.routes.TopBotsPageController
@@ -81,7 +81,7 @@ class BotListWebsite(val websiteUrl: String, val frontendFolder: String) : Kooby
 	use(PromotedBotsPageController::class.java)
 	use(SearchController::class.java)
 	get("/") { req, res ->
-		res.send(Home.build(req, res))
+		res.send(HomeView().generate(req, res))
 	}
 	get("/bot/:botId") { req, res ->
 		val botId = req.param("botId")
@@ -90,16 +90,16 @@ class BotListWebsite(val websiteUrl: String, val frontendFolder: String) : Kooby
 
 		if (botInfo != null) {
 			if (bot != null) {
-				res.send(ViewBot.build(req, botInfo, bot))
+				res.send(ViewBotView(bot, botInfo).generate(req, res))
 				return@get
 			} else {
-				res.send(NotFoundError.build(req))
+				res.send(NotFoundErrorView().generate(req, res))
 				return@get
 			}
 		}
 
 		res.status(Status.NOT_FOUND)
-		res.send(NotFoundError.build(req))
+		res.send(NotFoundErrorView().generate(req, res))
 	}
 	get("/login") { req, res ->
 		// OAuth2 flow
@@ -146,13 +146,13 @@ class BotListWebsite(val websiteUrl: String, val frontendFolder: String) : Kooby
 	}
 	with {
 		get("/dashboard") { req, res ->
-			res.send(Dashboard.build(req, res))
+			res.send(DashboardView().generate(req, res))
 		}
 		use(AddBotController::class.java)
 		use(ConfigureBotController::class.java)
 	}.attr("requiresAuth", true)
 
 	err(404) { req, res, err ->
-		res.send(NotFoundError.build(req))
+		res.send(NotFoundErrorView().generate(req, res))
 	}
 })

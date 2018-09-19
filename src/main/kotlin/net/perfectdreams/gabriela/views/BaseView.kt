@@ -6,13 +6,23 @@ import net.perfectdreams.gabriela.oauth2.TemmieDiscordAuth
 import net.perfectdreams.gabriela.utils.Constants.WEBSITE_URL
 import net.perfectdreams.gabriela.utils.EntryColor
 import org.jooby.Request
+import org.jooby.Response
 import java.io.StringWriter
 import java.util.*
 
-object Base {
-	fun build(req: Request, pageTitle: String = "Bots, bots, bots!", color: EntryColor?, block: DIV.() -> Unit) = StringWriter().appendHTML().html {
+abstract class BaseView {
+	open fun getPageTitle(): String = "Bots, bots, bots!"
+	open fun getDescription(): String = "Te ajudando a transformar o seu servidor no Discord em algo incrível!"
+	open fun getIcon(): String = "https://bots.perfectdreams.net/assets/img/gabriela.png"
+	open fun getEntryColor(): EntryColor {
+		return EntryColor.BLURPLE
+	}
+
+	abstract fun getContent(req: Request, res: Response): DIV.() -> Unit
+
+	fun generate(req: Request, res: Response) = StringWriter().appendHTML().html {
 		head {
-			title { + ("$pageTitle • Vespertine's Bot List") }
+			title { + ("${getPageTitle()} • Discord Bots") }
 			meta("theme-color", "#7289da")
 			meta(name = "viewport", content = "width=device-width, initial-scale=1")
 			unsafe {
@@ -22,7 +32,6 @@ object Base {
 <link rel="manifest" href="/site.webmanifest">
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#00aba9">
-<meta name="theme-color" content="#ffffff">
 """)
 			}
 			unsafe {
@@ -47,13 +56,14 @@ object Base {
 			styleLink("https://use.fontawesome.com/releases/v5.2.0/css/all.css")
 			styleLink("$WEBSITE_URL/assets/css/style.css")
 			styleLink("https://rawgit.com/ellekasai/twemoji-awesome/gh-pages/twemoji-awesome.css")
+			meta(content = "Discord Bots") { attributes["property"] = "og:site_name" }
+			meta(content = getDescription()) { attributes["property"] = "og:description" }
+			meta(content = getPageTitle()) { attributes["property"] = "og:title" }
+			meta(content = "600") { attributes["property"] = "og:ttl" }
+			meta(content = getIcon()) { attributes["property"] = "og:image"}
 		}
 		body {
-			if (color != null)
-				classes += "color-${color.name.toLowerCase().replace("_", "-")}"
-			else {
-				classes += "color-blurple"
-			}
+			classes += "color-${getEntryColor().name.toLowerCase().replace("_", "-")}"
 			div("topnav navbar-fixed-top") {
 				id = "myTopnav"
 				div("topnavWrapper") {
@@ -98,7 +108,7 @@ object Base {
 			}
 			div {
 				style = "flex: 1;"
-				block()
+				getContent(req, res).invoke(this)
 			}
 			footer {
 				unsafe {

@@ -3,7 +3,7 @@ package net.perfectdreams.gabriela.website.routes.bot.configure
 import com.mongodb.client.model.Filters
 import net.perfectdreams.gabriela.GabrielaLauncher
 import net.perfectdreams.gabriela.utils.Constants
-import net.perfectdreams.gabriela.views.GenericError
+import net.perfectdreams.gabriela.views.GenericErrorView
 import org.jooby.Request
 import org.jooby.Response
 import org.jooby.Status
@@ -21,7 +21,7 @@ class SupportBotController {
 		if (botInfo != null && bot != null) {
 			val supportUrl = if (!botInfo.supportUrl.isNullOrBlank()) { botInfo.supportUrl!! } else {
 				res.status(Status.FORBIDDEN)
-				res.send(GenericError.build(req, "whoops"))
+				res.send(GenericErrorView("whoops").generate(req, res))
 				return
 			}
 			res.redirect(Status.FOUND, supportUrl)
@@ -30,6 +30,6 @@ class SupportBotController {
 		}
 
 		res.status(Status.FORBIDDEN)
-		res.send(GenericError.build(req, "whoops"))
+		res.send(GenericErrorView("whoops").generate(req, res))
 	}
 }

@@ -5,8 +5,13 @@ import net.perfectdreams.gabriela.utils.generateHeader
 import org.jooby.Request
 import org.jooby.Response
 
-object Search {
-	fun build(req: Request, res: Response) = Base.build(req, "Pesquisar", null) {
+class SearchView : BaseView() {
+	override fun getPageTitle(): String {
+		return "Pesquisar"
+	}
+
+
+	override fun getContent(req: Request, res: Response): DIV.() -> Unit = {
 		div {
 			id = "content"
 			generateHeader(

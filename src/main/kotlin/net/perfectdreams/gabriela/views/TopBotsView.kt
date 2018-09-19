@@ -1,7 +1,9 @@
 package net.perfectdreams.gabriela.views
 
+import kotlinx.html.DIV
 import kotlinx.html.div
 import kotlinx.html.id
+import kotlinx.html.title
 import net.dv8tion.jda.core.entities.Member
 import net.perfectdreams.gabriela.models.DiscordBot
 import net.perfectdreams.gabriela.utils.Constants.botListGuild
@@ -10,8 +12,12 @@ import net.perfectdreams.gabriela.utils.generateHeader
 import org.jooby.Request
 import org.jooby.Response
 
-object TopBots {
-	fun build(req: Request, res: Response, title: String, botInfos: List<DiscordBot>) = Base.build(req, title, null) {
+class TopBotsView(val title: String, val botInfos: List<DiscordBot>) : BaseView() {
+	override fun getPageTitle(): String {
+		return title
+	}
+
+	override fun getContent(req: Request, res: Response): DIV.() -> Unit = {
 		div {
 			id = "content"
 			generateHeader(

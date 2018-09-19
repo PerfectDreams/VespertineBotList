@@ -3,9 +3,10 @@ package net.perfectdreams.gabriela.views
 import kotlinx.html.*
 import net.perfectdreams.gabriela.utils.Constants
 import org.jooby.Request
+import org.jooby.Response
 
-object NewBotSuccess {
-	fun build(req: Request) = Base.build(req, "Wow!", null) {
+class NewBotSuccess : BaseView() {
+	override fun getContent(req: Request, res: Response): DIV.() -> Unit = {
 		div {
 			id = "content"
 			div {

@@ -1,10 +1,7 @@
 package net.perfectdreams.gabriela.views
 
 import com.mongodb.client.model.Filters
-import kotlinx.html.a
-import kotlinx.html.div
-import kotlinx.html.i
-import kotlinx.html.id
+import kotlinx.html.*
 import net.perfectdreams.gabriela.GabrielaLauncher.gabriela
 import net.perfectdreams.gabriela.oauth2.TemmieDiscordAuth
 import net.perfectdreams.gabriela.utils.Constants
@@ -14,8 +11,12 @@ import net.perfectdreams.gabriela.utils.generateHeader
 import org.jooby.Request
 import org.jooby.Response
 
-object Dashboard {
-	fun build(req: Request, res: Response) = Base.build(req, "Painel", null) {
+class DashboardView : BaseView() {
+	override fun getPageTitle(): String {
+		return "Painel"
+	}
+
+	override fun getContent(req: Request, res: Response): DIV.() -> Unit = {
 		div {
 			id = "content"
 			val userIdentification = req.ifGet<TemmieDiscordAuth.UserIdentification>("userIdentification").get()
@@ -33,7 +34,7 @@ object Dashboard {
 			generateHeader(
 					"fas fa-robot",
 					"Seus Bots",
-					"Lista com os bots que você enviou no Vespertine's Bot List!"
+					"Lista com os bots que você enviou em nossa lista!"
 			)
 
 			div("pure-g") {

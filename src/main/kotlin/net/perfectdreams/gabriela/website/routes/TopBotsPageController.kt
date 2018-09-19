@@ -4,7 +4,7 @@ import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Sorts
 import net.perfectdreams.gabriela.GabrielaLauncher.gabriela
-import net.perfectdreams.gabriela.views.TopBots
+import net.perfectdreams.gabriela.views.TopBotsView
 import org.jooby.Request
 import org.jooby.Response
 import org.jooby.mvc.GET
@@ -30,6 +30,6 @@ class TopBotsPageController {
 						)
 				).toMutableList()
 
-		res.send(TopBots.build(req, res, "Os melhores bots para o Discord", bestBots))
+		res.send(TopBotsView("Os melhores bots para o Discord", bestBots).generate(req, res))
 	}
 }

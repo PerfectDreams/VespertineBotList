@@ -6,9 +6,9 @@ import net.perfectdreams.gabriela.models.DiscordBot
 import net.perfectdreams.gabriela.oauth2.TemmieDiscordAuth
 import net.perfectdreams.gabriela.utils.BotLibrary
 import net.perfectdreams.gabriela.utils.Constants
-import net.perfectdreams.gabriela.views.GenericError
-import net.perfectdreams.gabriela.views.NewBot
+import net.perfectdreams.gabriela.views.GenericErrorView
 import net.perfectdreams.gabriela.views.NewBotSuccess
+import net.perfectdreams.gabriela.views.NewBotView
 import org.jooby.Request
 import org.jooby.Response
 import org.jooby.mvc.GET
@@ -19,7 +19,7 @@ import org.jooby.mvc.Path
 class AddBotController {
 	@GET
 	fun viewAddBotPage(req: Request, res: Response) {
-		res.send(NewBot.build(req))
+		res.send(NewBotView().generate(req, res))
 	}
 
 	@POST
@@ -28,7 +28,7 @@ class AddBotController {
 		val checkbox = req.param("terms-of-use").value("off")
 
 		if (checkbox != "on") {
-			res.send(GenericError.build(req, "Você precisa aceitar os termos de uso do VespertineDreams para enviar o seu bot!"))
+			res.send(GenericErrorView("Você precisa aceitar os termos de uso do VespertineDreams para enviar o seu bot!").generate(req, res))
 			return
 		}
 		val prefix = req.param("prefix").value()
@@ -41,12 +41,12 @@ class AddBotController {
 
 		if (!user.isBot) {
 			// Você não pode adicionar uma coisa que não é um bot
-			res.send(GenericError.build(req, "Você não pode adicionar algo que não é um bot!"))
+			res.send(GenericErrorView("Você não pode adicionar algo que não é um bot!").generate(req, res))
 			return
 		}
 
 		if (GabrielaLauncher.gabriela.collection.find(Filters.eq("_id", user.id)).count() != 0) {
-			res.send(GenericError.build(req, "Você não pode adicionar um bot que já está na lista!"))
+			res.send(GenericErrorView("Você não pode adicionar um bot que já está na lista!").generate(req, res))
 			return
 		}
 
@@ -87,6 +87,6 @@ Para rejeitar, use `g!bot rejeitar $clientId MotivoDaRejeição`
 ~~--------------------------------------------------------------------------------------------------------------------------------------------~~
 			""".trimIndent()
 		).queue()
-		res.send(NewBotSuccess.build(req))
+		res.send(NewBotSuccess().generate(req, res))
 	}
 }

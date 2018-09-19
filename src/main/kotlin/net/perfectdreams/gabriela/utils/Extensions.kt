@@ -187,3 +187,107 @@ fun DIV.generateBotInfo(bot: DiscordBot, customLinks: (DIV.() -> Unit)? = null) 
 		}
 	}
 }
+
+fun DIV.generateBotsInfo(bots: List<DiscordBot>, customLinks: (DIV.() -> Unit)? = null) {
+	val row1 = bots.filterIndexed { index, discordBot -> index % 4 == 0 }
+	val row2 = bots.filterIndexed { index, discordBot -> index % 4 == 1 }
+	val row3 = bots.filterIndexed { index, discordBot -> index % 4 == 2 }
+	val row4 = bots.filterIndexed { index, discordBot -> index % 4 == 3 }
+
+	fun generateInfo(bot: DiscordBot) {
+		val status = DiscordUtils.getUserStatus(bot.botId)
+		div {
+			id = "bot-entry"
+			classes += "color-${bot.color.name.toLowerCase().replace("_", "-")}"
+			if (status == OnlineStatus.OFFLINE)
+				style = "opacity: 0.5;"
+			div(classes = "header") {
+				div(classes = "status") {
+					classes += when (status) {
+						OnlineStatus.ONLINE -> "online-color"
+						OnlineStatus.IDLE -> "away-color"
+						OnlineStatus.DO_NOT_DISTURB -> "busy-color"
+						else -> "offline-color"
+					}
+				}
+				img(classes = "rounded-image avatar", src = DiscordUtils.getUserAvatarUrl(bot.botId))
+				div(classes = "info-wrapper") {
+					div(classes = "info") {
+						div(classes = "name") {
+							+DiscordUtils.getUserName(bot.botId)
+						}
+						if (bot.getServerCount() != 0) {
+							div(classes = "guild-count") {
+								+"${bot.getServerCount()} servidores"
+							}
+						}
+					}
+					div(classes = "upvote") {
+						i(classes = "far fa-thumbs-up")
+						span(classes = "bot-upvotes") {
+							+" ${bot.votes.count { it.votedAt > System.currentTimeMillis() - 2592000000 }}"
+						}
+					}
+				}
+			}
+			div(classes = "description") {
+				div(classes = "description-text") {
+					+(bot.tagline ?: Constants.DEFAULT_DESCRIPTION)
+				}
+				if (bot.categories.isNotEmpty()) {
+					div(classes = "tags") {
+						i(classes = "fas fa-tags")
+						+" "
+						for (category in bot.categories) {
+							span {
+								+category.title
+							}
+							if (bot.categories.last() != category) {
+								+", "
+							}
+						}
+					}
+				}
+				hr {}
+				div(classes = "more-info") {
+					if (customLinks != null) {
+						customLinks()
+					} else {
+						a(href = "${Constants.WEBSITE_URL}/bot/${bot.botId}") {
+							+ "Ver"
+						}
+						a(href = "${Constants.WEBSITE_URL}/bot/${bot.botId}/invite") {
+							+ "Adicionar"
+						}
+						if (!bot.websiteUrl.isNullOrBlank()) {
+							a(href = "${Constants.WEBSITE_URL}/bot/${bot.botId}/website", target = "_blank") {
+								+ "Website"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	div("pure-u-1 pure-u-md-1-4") {
+		for (bot in row1) {
+			generateInfo(bot)
+		}
+	}
+	div("pure-u-1 pure-u-md-1-4") {
+		for (bot in row2) {
+			generateInfo(bot)
+		}
+	}
+	div("pure-u-1 pure-u-md-1-4") {
+		for (bot in row3) {
+			generateInfo(bot)
+		}
+	}
+	div("pure-u-1 pure-u-md-1-4") {
+		for (bot in row4) {
+			generateInfo(bot)
+		}
+	}
+}

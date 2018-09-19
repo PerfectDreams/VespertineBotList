@@ -2,6 +2,7 @@ package net.perfectdreams.gabriela.views
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.TextSearchOptions
+import kotlinx.html.DIV
 import kotlinx.html.div
 import kotlinx.html.id
 import kotlinx.html.style
@@ -15,8 +16,12 @@ import net.perfectdreams.gabriela.utils.generateHeader
 import org.jooby.Request
 import org.jooby.Response
 
-object SearchResult {
-	fun build(req: Request, res: Response) = Base.build(req, "Resultados da Pesquisa", null) {
+class SearchResultView : BaseView() {
+	override fun getPageTitle(): String {
+		return "Resultados da Pesquisa"
+	}
+
+	override fun getContent(req: Request, res: Response): DIV.() -> Unit = {
 		div {
 			id = "content"
 			generateHeader(
