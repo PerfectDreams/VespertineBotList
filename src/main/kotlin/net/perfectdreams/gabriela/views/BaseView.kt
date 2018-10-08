@@ -85,6 +85,9 @@ abstract class BaseView {
 					div("topnavRight") {
 						div("rightEntries") {
 							if (discordAuth != null) {
+								a(href = "$WEBSITE_URL/logout") {
+									i(classes = "fas fa-sign-out-alt")
+								}
 								a(href = "$WEBSITE_URL/dashboard") {
 									i(classes = "fas fa-robot")
 									+" Seus Bots"

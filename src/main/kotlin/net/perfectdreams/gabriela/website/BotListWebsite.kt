@@ -101,6 +101,10 @@ class BotListWebsite(val websiteUrl: String, val frontendFolder: String) : Kooby
 		res.status(Status.NOT_FOUND)
 		res.send(NotFoundErrorView().generate(req, res))
 	}
+	get("/logout") { req, res ->
+		req.session().destroy()
+		res.redirect(Constants.WEBSITE_URL)
+	}
 	get("/login") { req, res ->
 		// OAuth2 flow
 		if (req.param("code").isSet) { // Pedido de autenticação

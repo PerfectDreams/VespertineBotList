@@ -12,7 +12,7 @@ class BetterWhitelist : Whitelist() {
 				"colgroup", "dd", "div", "dl", "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6",
 				"i", "img", "li", "ol", "p", "pre", "q", "small", "strike", "strong",
 				"sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u",
-				"ul");
+				"ul", "iframe")
 		addAttributes("a", "href", "title");
 		addAttributes("blockquote", "cite");
 		addAttributes("col", "span", "width");
@@ -23,7 +23,8 @@ class BetterWhitelist : Whitelist() {
 		addAttributes("table", "summary", "width");
 		addAttributes("td", "abbr", "axis", "colspan", "rowspan", "width");
 		addAttributes("th", "abbr", "axis", "colspan", "rowspan", "scope", "width");
-		addAttributes("ul", "type");
+		addAttributes("ul", "type")
+		addAttributes("iframe", "width", "height", "src")
 		addProtocols("a", "href", "ftp", "http", "https", "mailto");
 		addProtocols("blockquote", "cite", "http", "https");
 		addProtocols("cite", "cite", "http", "https");

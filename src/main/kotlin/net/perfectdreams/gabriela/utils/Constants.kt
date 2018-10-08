@@ -2,6 +2,8 @@ package net.perfectdreams.gabriela.utils
 
 import com.google.gson.Gson
 import com.google.gson.JsonParser
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension
+import com.vladsch.flexmark.ext.tables.TablesExtension
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
 import com.vladsch.flexmark.util.options.MutableDataSet
@@ -25,8 +27,9 @@ object Constants {
 	val jsonParser = JsonParser()
 	val random = SplittableRandom()
 	val slowRandom = Random()
-	val parser = Parser.builder(MutableDataSet()).build()
-	val renderer = HtmlRenderer.builder(MutableDataSet()).build()
+	val mutableDataSet = MutableDataSet().set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), StrikethroughExtension.create()))
+	val parser = Parser.builder(mutableDataSet).build()
+	val renderer = HtmlRenderer.builder(mutableDataSet).build()
 
 	val WEBSITE_URL: String by lazy {
 		gabriela.config.websiteUrl
